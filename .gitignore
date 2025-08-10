@@ -5,9 +5,6 @@
 # Rust Cargo.lock - 通常はアプリケーションで管理、ライブラリなら除外も検討
 # Cargo.lock
 
-# VSCode設定ファイル
-.vscode/
-
 # Python bytecode
 __pycache__/
 *.py[cod]

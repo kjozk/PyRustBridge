@@ -36,27 +36,36 @@ class PyRustBridge:
             func.argtypes = argtypes
             setattr(self, name, func)
 
-    def __getattr__(self, name):
-        # 既にキャッシュ済みなら返す
-        if name in self._func_cache:
-            return self._func_cache[name]
+    def _call_func(self, name, *args):
+        # ctypes呼び出し共通処理
+        if name not in self._func_cache:
+            func = getattr(self.lib, name)
 
-        # 関数シグネチャ情報がなければ AttributeError
-        if name not in self._func_signatures:
-            raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+            # 関数シグネチャ情報がなければ AttributeError
+            if name not in self._func_signatures:
+                raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
 
-        # ctypes から関数オブジェクト取得
-        func = getattr(self.lib, name)
-        restype, argtypes = self._func_signatures[name]
-        func.restype = restype
-        func.argtypes = argtypes
+            # ctypes から関数オブジェクト取得
+            func = getattr(self.lib, name)
+            restype, argtypes = self._func_signatures[name]
+            func.restype = restype
+            func.argtypes = argtypes
 
-        # キャッシュして返す
-        self._func_cache[name] = func
-        return func
+            self._func_cache[name] = func
+        else:
+            func = self._func_cache[name]
+        return func(*args)
+
+    def add(self, a, b):
+        return self._call_func('add', a, b)
+
+    def multiply(self, a, b):
+        return self._call_func('multiply', a, b)
+
 
 if __name__ == "__main__":
     bridge = PyRustBridge()
 
+    print("1 + 1 =", bridge.add(1, 1))
     print("2 + 3 =", bridge.add(2, 3))
     print("4 * 5 =", bridge.multiply(4, 5))
