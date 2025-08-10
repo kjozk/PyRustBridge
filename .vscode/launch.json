@@ -1,5 +1,5 @@
 {
-    "version": "0.2.0",
+    "version": "2.0.0",
     "configurations": [
         {
             "name": "Python: Current File with Native Debugging",
@@ -10,14 +10,20 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Rust: LLDB Debug",
+            "name": "Rust: Debug Test",
             "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/target/debug/rustlib.dll",
+            "cargo": {
+                "args": ["test", "--no-run", "--lib"],
+                "filter": {
+                    "name": "test_add",
+                    "kind": "test"
+                }
+            },
+            "program": "${cargo:program}",
             "args": [],
-            "cwd": "${workspaceFolder}",
-            "stopOnEntry": false,
-            "sourceLanguages": ["rust"]
+            "cwd": "${workspaceFolder}/rustlib",
+            "stopOnEntry": false
         }
     ]
 }

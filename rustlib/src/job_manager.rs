@@ -36,6 +36,33 @@ impl JobManager {
         });
     }
 
+    /*
+    pub fn start_job_with_command(&self, job_id: u64, command_json: &str) {
+        let parsed: Value = serde_json::from_str(command_json).unwrap();
+        let command = parsed["command"].as_str().unwrap_or("");
+        let params = &parsed["params"];
+
+        let job = Arc::new(Mutex::new(Job { progress: 0, canceled: false }));
+        self.jobs.lock().unwrap().insert(job_id, job.clone());
+
+        std::thread::spawn(move || {
+            match command {
+                "heavy_calc" => {
+                    let x = params["x"].as_i64().unwrap_or(0);
+                    let y = params["y"].as_i64().unwrap_or(0);
+                    // heavy calculation logic here
+                }
+                "another_command" => {
+                    // 別処理
+                }
+                _ => {
+                    // 不明コマンド
+                }
+            }
+            // 進捗や結果の管理は既存のJobManagerで対応
+        });
+    } */
+
     pub fn cancel_job(&self, job_id: u64) {
         if let Some(job) = self.jobs.lock().unwrap().get(&job_id) {
             let mut job = job.lock().unwrap();
