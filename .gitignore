@@ -1,0 +1,54 @@
+# Rust build artifacts
+/target/
+/**/target/
+
+# Rust Cargo.lock - 通常はアプリケーションで管理、ライブラリなら除外も検討
+# Cargo.lock
+
+# VSCode設定ファイル
+.vscode/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python virtual environment
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# macOS Finder関連ファイル
+.DS_Store
+
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+
+# Logs
+*.log
+
+# IDE/editor specific
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Python pytest cache
+.pytest_cache/
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# mypy cache
+.mypy_cache/
+
+# Cython debug symbols
+cython_debug/
