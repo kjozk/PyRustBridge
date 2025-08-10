@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ジョブ管理</title>
+</head>
+<body>
+    <h1>Rustジョブ管理デモ</h1>
+    <button onclick="startJob()">ジョブ開始</button>
+    <h2>ジョブ一覧</h2>
+    <table border="1" id="jobsTable">
+        <thead>
+            <tr><th>Job ID</th><th>進捗 (%)</th><th>操作</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <button onclick="refreshAll()">状態更新</button>
+
+<script>
+let jobs = [];
+
+function startJob() {
+    fetch('/start_job', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            alert('ジョブ開始: ID=' + data.job_id);
+            jobs.push(data.job_id);
+            updateTable();
+        });
+}
+
+function getStatus(jobId) {
+    return fetch('/job_status/' + jobId).then(res => res.json());
+}
+
+function cancelJob(jobId) {
+    fetch('/cancel_job/' + jobId, { method: 'POST' })
+        .then(res => res.json())
+        .then(() => {
+            alert('ジョブキャンセル: ID=' + jobId);
+            jobs = jobs.filter(id => id !== jobId);
+            updateTable();
+        });
+}
+
+function updateTable() {
+    const tbody = document.querySelector('#jobsTable tbody');
+    tbody.innerHTML = '';
+    jobs.forEach(jobId => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${jobId}</td>
+            <td id="progress-${jobId}">取得中...</td>
+            <td>
+                <button onclick="refreshJob(${jobId})">更新</button>
+                <button onclick="cancelJob(${jobId})">キャンセル</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+        refreshJob(jobId);
+    });
+}
+
+function refreshJob(jobId) {
+    getStatus(jobId).then(data => {
+        const td = document.getElementById('progress-' + jobId);
+        if (data.progress !== undefined) {
+            td.textContent = data.progress + ' %';
+            if (data.progress >= 100) {
+                td.textContent += ' (完了)';
+                jobs = jobs.filter(id => id !== jobId);
+                updateTable();
+            }
+        } else {
+            td.textContent = '不明なジョブ';
+        }
+    });
+}
+
+function refreshAll() {
+    jobs.forEach(jobId => refreshJob(jobId));
+}
+
+setInterval(refreshAll, 5000);
+</script>
+</body>
+</html>

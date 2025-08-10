@@ -49,3 +49,5 @@ build/
 
 # Cython debug symbols
 cython_debug/
+
+python_client/venv/
